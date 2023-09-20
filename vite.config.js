@@ -11,4 +11,7 @@ export default defineConfig({
       plugins: [tailwindcss, autoprefixer],
     },
   },
-})
+  build: {
+    outDir: 'dist', // Set this to match your Firebase Hosting "public" directory
+  },
+});

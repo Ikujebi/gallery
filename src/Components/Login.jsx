@@ -3,7 +3,7 @@ import {  useState,useEffect } from "react";
 import { Button, Col, Form, Input, Row } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import ayanfe from '../assets/images/ayanfe.png'
-import { auth } from '../firebase';
+// import { getAuth } from '../firebase';
 
 
 const Signin = ({setIsAuthenticated}) => {

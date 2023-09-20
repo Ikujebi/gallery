@@ -1,76 +1,54 @@
-import React, { useState, useEffect } from "react";
-import { Row, Col, Input, Button } from "antd";
-import ImageList from "./Images"; // Import your ImageList component.
-import { DragDropContext } from "react-beautiful-dnd";
+import React, { useState } from "react";
+import { Row, Col, Input } from "antd";
+import ImageList from "./Images";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
+const Gallery = ({ images }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredImages, setFilteredImages] = useState(images);
 
+  const handleSearchInputChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+    const filtered = images.filter((image) => image.tag.toLowerCase().includes(term));
+    setFilteredImages(filtered);
+  };
 
-const Gallery = ({images}) => {
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
 
-    console.log(images);
-    const [searchTerm, setSearchTerm] = useState(""); // State to store the search term.
-    const [imageOrder, setImageOrder] = useState([...images.map((image) => image.id)]);
+    const newFilteredImages = [...filteredImages];
+    const [movedImage] = newFilteredImages.splice(result.source.index, 1);
+    newFilteredImages.splice(result.destination.index, 0, movedImage);
 
+    // Update the filtered images after dragging and dropping
+    setFilteredImages(newFilteredImages);
+  };
 
-
-    // Function to handle filtering images based on search term.
-     const filteredImages = images.filter((image) =>
-     image.tag.toLowerCase().includes(searchTerm.toLowerCase())
-   );
-  
-    // Function to handle search input change.
-    const handleSearchInputChange = (e) => {
-      setSearchTerm(e.target.value);
-    };
-
-
-    const onDragEnd = (result) => {
-        if (!result.destination) {
-          // Item was dropped outside the droppable area, no action required.
-          return;
-        }
-    
-        // Reorder the images based on the drag-and-drop.
-        const newImageOrder = [...imageOrder];
-        const [movedImage] = newImageOrder.splice(result.source.index, 1);
-        newImageOrder.splice(result.destination.index, 0, movedImage);
-    
-        // Update the state with the new order of images.
-        setImageOrder(newImageOrder);
-      };
-    
-      // Use the ordered image IDs to render the images in the desired order.
-      const orderedImages = imageOrder.map((imageId) =>
-        images.find((image) => image.id === imageId)
-      );
-    
-    
-console.log(images);
-    return (
-        <div>
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <h1>Image Gallery</h1>
-            </Col>
-            <Col span={12}>
-              <Input
-                placeholder="Search images by tag"
-                onChange={handleSearchInputChange}
-              />
-            </Col>
-          </Row>
-          <div>
-        <DragDropContext onDragEnd={onDragEnd}>
+  return (
+    <div className="container mx-auto mt-4 p-4">
+      <Row gutter={[16, 16]}>
+        <Col span={12}>
+          <h1 className="text-2xl font-semibold mb-4">Image Gallery</h1>
+        </Col>
+        <Col span={12}>
+          <Input
+            placeholder="Search images by tag"
+            onChange={handleSearchInputChange}
+            className="w-full"
+          />
+        </Col>
+      </Row>
+      <div>
+        <DndProvider onDragEnd={onDragEnd} backend={HTML5Backend}>
           <ImageList images={filteredImages} />
-        </DragDropContext>
+        </DndProvider>
       </div>
-        </div>
-      );
+    </div>
+  );
 };
 
 export default Gallery;
-
-
-
-
-

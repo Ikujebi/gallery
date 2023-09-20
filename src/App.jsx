@@ -23,8 +23,10 @@ import tiger from "./assets/images/tiger.png";
 import wolf from "./assets/images/wolf.png";
 import zebra from "./assets/images/zebra.png";
 
+
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true'
+  );
 
   const ProtectedRoutes = ({children}) =>{
     
